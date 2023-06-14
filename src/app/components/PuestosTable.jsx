@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineDelete } from "react-icons/md";
 import Editar from "./EditPuestos";
+import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
   table: "puestostrabajo",
@@ -131,8 +132,10 @@ export default function PuestosTable({ editProp }) {
                     <Td>
                       <Editar dataProp={editProp} prevData={dato} />
                     </Td>
-                    <Td
-                      onClick={() => {
+                    <ConfirmationButton
+                      buttonLabel={<MdOutlineDelete />}
+                      confirmationLabel="eliminar este puesto"
+                      onConfirm={() => {
                         let del = deletePuesto("id", dato.id);
                         del.then((res) => {
                           if (res == null) {
@@ -152,9 +155,7 @@ export default function PuestosTable({ editProp }) {
                           }
                         });
                       }}
-                    >
-                      <MdOutlineDelete />
-                    </Td>
+                    />
                   </Tr>
                 );
               })}

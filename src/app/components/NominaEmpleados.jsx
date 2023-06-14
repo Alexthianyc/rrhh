@@ -7,19 +7,19 @@ import {
   Td,
   TableCaption,
   TableContainer,
-  // Tfoot,
-  // Flex,
-  // Button,
+  Tfoot,
+  Button,
 } from "@chakra-ui/react";
 import { supabase } from "@app/utils/supabaseClient";
 import { useEffect, useState } from "react";
+import NominasPdf from "./NominasPdf";
 
 const fetchData = async () => {
   try {
     let { data, error } = await supabase
       .from("trabajadores")
       .select(
-        "dui,candidatos(nombres,apellidos),categoriascapital(salarioBase)"
+        "dui,candidatos(nombres,apellidos),categoriascapital(salarioBase,nombre)"
       );
 
     if (error) {
@@ -97,94 +97,72 @@ const calcularRenta = (salarioBase, renta, deduccionesCargadas) => {
   return rentaCalculada;
 };
 
+const generarPDF = async (data) => {
+  const contenidoPDF = await NominasPdf(data); // Llama a la función para generar el contenido del PDF
+  const blob = new Blob([contenidoPDF], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank"); // Abre el PDF en una nueva pestaña
+};
+
 export default function NominaEmpleados() {
   const [datosCargados, setDatosCargados] = useState(null);
-  useEffect(() => {
-    const fetchDataAndSetState = async () => {
-      const data = await fetchData();
-      //   console.log(data);
-      setDatosCargados(data || []);
-    };
-
-    if (!datosCargados) {
-      fetchDataAndSetState();
-    }
-
-    const suscripcion = supabase
-      .channel("custom-all-channel")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "trabajadores" },
-        (payload) => {
-          // console.log(payload);
-          fetchDataAndSetState();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      suscripcion.unsubscribe();
-    };
-  }, [datosCargados]);
-
   const [descuentosCargados, setDescuentosCargados] = useState(null);
-  useEffect(() => {
-    const fetchDataAndSetState = async () => {
-      const data = await fetchDescuentos();
-      //   console.log(data);
-      setDescuentosCargados(data || []);
-    };
-
-    if (!descuentosCargados) {
-      fetchDataAndSetState();
-    }
-
-    const suscripcion = supabase
-      .channel("custom-all-channel")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "deducciones" },
-        (payload) => {
-          fetchDataAndSetState();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      suscripcion.unsubscribe();
-    };
-  }, [descuentosCargados]);
-
   const [rentaCargada, setRentaCargada] = useState(null);
+
   useEffect(() => {
-    const fetchDataAndSetState = async () => {
-      const data = await fetchRenta();
-      data.sort((a, b) => a.tramo - b.tramo);
-      //   console.log(data);
-      setRentaCargada(data || []);
+    const fetchDataAndSetState = async (tableChange = null) => {
+      if (tableChange == null) {
+        const data = await fetchData();
+        const descuentos = await fetchDescuentos();
+        const renta = await fetchRenta();
+
+        setDatosCargados(data || []);
+        setDescuentosCargados(descuentos || []);
+        setRentaCargada(renta || []);
+      } else {
+        if (tableChange == "trabajadores") {
+          const datos = await fetchData();
+          setDatosCargados(datos || []);
+        }
+        if (tableChange == "deducciones") {
+          const descuentos = await fetchDescuentos();
+          setDescuentosCargados(descuentos || []);
+        }
+        if (tableChange == "renta") {
+          const renta = await fetchRenta();
+          setRentaCargada(renta || []);
+        }
+      }
     };
 
-    if (!rentaCargada) {
+    if (!datosCargados || !descuentosCargados || !rentaCargada) {
       fetchDataAndSetState();
     }
 
     const suscripcion = supabase
       .channel("custom-all-channel")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "renta" },
-        (payload) => {
-          fetchDataAndSetState();
+      .on("postgres_changes", { event: "*", schema: "public" }, (payload) => {
+        const { table } = payload;
+        // console.log(table);
+
+        if (table === "trabajadores") {
+          fetchDataAndSetState(table);
+        } else if (table === "deducciones") {
+          fetchDataAndSetState(table);
+        } else if (table === "renta") {
+          fetchDataAndSetState(table);
         }
-      )
+      })
       .subscribe();
 
     return () => {
       suscripcion.unsubscribe();
     };
-  }, [rentaCargada]);
+  }, [datosCargados, descuentosCargados, rentaCargada]);
 
   let deducciones = 0;
+  let nominas = [];
+  let item = {};
   return (
     <>
       <TableContainer>
@@ -206,19 +184,49 @@ export default function NominaEmpleados() {
           <Tbody>
             {datosCargados != null &&
               datosCargados.map((dato) => {
+                descuentosCargados.map((descuento) => {
+                  deducciones +=
+                    dato.categoriascapital.salarioBase *
+                    (descuento.porcentajeTrabajador / 100);
+                });
+
+                item = {
+                  dui: dato.dui,
+                  puesto: dato.categoriascapital.nombre,
+                  nombre:
+                    dato.candidatos.nombres + " " + dato.candidatos.apellidos,
+                  salarioBase: dato.categoriascapital.salarioBase,
+                  descuentos: descuentosCargados.map((descuento) => {
+                    return {
+                      tipo: descuento.nombre,
+                      monto:
+                        dato.categoriascapital.salarioBase *
+                        (descuento.porcentajeTrabajador / 100),
+                    };
+                  }),
+                  renta: calcularRenta(
+                    dato.categoriascapital.salarioBase,
+                    rentaCargada,
+                    deducciones
+                  ),
+                  salarioLiquido:
+                    dato.categoriascapital.salarioBase -
+                    deducciones -
+                    calcularRenta(
+                      dato.categoriascapital.salarioBase,
+                      rentaCargada,
+                      deducciones
+                    ),
+                };
+                nominas.push(item);
+
                 return (
-                  <Tr key={dato.dui}>
-                    <Td>{dato.dui}</Td>
-                    <Td>
-                      {dato.candidatos.nombres} {dato.candidatos.apellidos}
-                    </Td>
-                    <Td>${dato.categoriascapital.salarioBase}</Td>
+                  <Tr key={item.dui}>
+                    <Td>{item.dui}</Td>
+                    <Td>{item.nombre}</Td>
+                    <Td>${item.salarioBase}</Td>
                     {descuentosCargados != null &&
                       descuentosCargados.map((descuento, i) => {
-                        deducciones +=
-                          dato.categoriascapital.salarioBase *
-                          (descuento.porcentajeTrabajador / 100);
-
                         return (
                           <Td key={i}>
                             $
@@ -229,42 +237,28 @@ export default function NominaEmpleados() {
                           </Td>
                         );
                       })}
-                    <Td>
-                      $
-                      {rentaCargada != null &&
-                        calcularRenta(
-                          dato.categoriascapital.salarioBase,
-                          rentaCargada,
-                          deducciones
-                        ).toFixed(2)}
-                    </Td>
-                    <Td>
-                      ${" "}
-                      {(
-                        dato.categoriascapital.salarioBase -
-                        deducciones -
-                        calcularRenta(
-                          dato.categoriascapital.salarioBase,
-                          rentaCargada,
-                          deducciones
-                        )
-                      ).toFixed(2)}
-                    </Td>
+                    <Td>${item.renta.toFixed(2)}</Td>
+                    <Td>$ {item.salarioLiquido.toFixed(2)}</Td>
                   </Tr>
                 );
               })}
           </Tbody>
-          {/* <Tfoot>
+          <Tfoot>
             <Tr>
-              <Th>
-                <Button colorScheme="teal" size="sm" my={2}>
-                  Generar boletas de pago
-                </Button>
-              </Th>
+              <Th></Th>
             </Tr>
-          </Tfoot> */}
+          </Tfoot>
         </Table>
       </TableContainer>
+      {/* {console.log(nominas)} */}
+      <Button
+        colorScheme="teal"
+        size="sm"
+        my={2}
+        onClick={() => generarPDF(nominas)}
+      >
+        Generar boletas de pago
+      </Button>
     </>
   );
 }

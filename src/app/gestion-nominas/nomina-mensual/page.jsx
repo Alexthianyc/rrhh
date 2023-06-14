@@ -1,7 +1,7 @@
 "use client";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import NominaEmpleados from "@app/components/NominaEmpleados";
-import NominaTrabajadores from "@app/components/NominaTrabajadores";
+import NominaEmpresa from "@app/components/NominaEmpresa";
 // import { PrestacionesCalc } from "@app/utils/PrestacionesCalc";
 
 export default function NominaMensual() {
@@ -18,7 +18,7 @@ export default function NominaMensual() {
             <NominaEmpleados />
           </TabPanel>
           <TabPanel>
-            <NominaTrabajadores />
+            <NominaEmpresa />
           </TabPanel>
         </TabPanels>
       </Tabs>
