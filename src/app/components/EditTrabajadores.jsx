@@ -10,7 +10,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Button,
   useDisclosure,
   useToast,
   Select,
@@ -18,6 +17,7 @@ import {
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@app/utils/supabaseClient";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
   table: "trabajadores",

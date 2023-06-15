@@ -2,7 +2,7 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import NominaEmpleados from "@app/components/NominaEmpleados";
 import NominaEmpresa from "@app/components/NominaEmpresa";
-import { PrestacionesCalc } from "@app/utils/PrestacionesCalc";
+// import { PrestacionesCalc } from "@app/utils/PrestacionesCalc";
 
 export default function NominaMensual() {
   // console.log(PrestacionesCalc(365));
