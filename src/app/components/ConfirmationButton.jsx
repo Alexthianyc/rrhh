@@ -26,10 +26,12 @@ const ConfirmationButton = ({
 
   return (
     <>
-      isTd ? <Td onClick={() => setIsOpen(true)}>{buttonLabel}</Td> :
-      <Button colorScheme="blue" mr={3} onClick={() => setIsOpen(true)}>
-        {buttonLabel}
-      </Button>
+      if(isTd){<Td onClick={() => setIsOpen(true)}>{buttonLabel}</Td>}else
+      {
+        <Button colorScheme="blue" mr={3} onClick={() => setIsOpen(true)}>
+          {buttonLabel}
+        </Button>
+      }
       ;
       <AlertDialog
         isOpen={isOpen}
