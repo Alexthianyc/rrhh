@@ -62,11 +62,11 @@ const menu = [
         path: "/gestion-nominas/definicion-salario",
       },
       {
-        Nombre: "Deducciones por Ley",
+        Nombre: "Deducciones",
         path: "/gestion-nominas/deducciones",
       },
       {
-        Nombre: "Prestaciones por Ley",
+        Nombre: "Prestaciones",
         path: "/gestion-nominas/prestaciones",
       },
       {
@@ -86,6 +86,10 @@ const menu = [
       {
         Nombre: "Gestor de ausencias y vacaciones",
         path: "/gestion-horarios/gestor-ausencias",
+      },
+      {
+        Nombre: "Gestor de horas extras",
+        path: "/gestion-horarios/gestor-horas-extras",
       },
       // ,
       // {

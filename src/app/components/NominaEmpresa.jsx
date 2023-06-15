@@ -20,7 +20,8 @@ const fetchData = async () => {
       .from("trabajadores")
       .select(
         "dui,candidatos(nombres,apellidos),categoriascapital(salarioBase)"
-      );
+      )
+      .eq("activo", true);
 
     if (error) {
       return error;
@@ -155,14 +156,14 @@ export default function NominaEmpleados() {
           </Thead>
           <Tbody>
             {datosCargados != null &&
-              descuentosCargados != null &&
               datosCargados.map((dato) => {
-                descuentosCargados.map((descuento) => {
+                descuentosCargados.forEach((descuento) => {
                   prestaciones +=
                     dato.categoriascapital.salarioBase *
                     (descuento.porcentajeEmpleador / 100);
                 });
-                item = {
+
+                const item = {
                   salarioBase: dato.categoriascapital.salarioBase,
                   prestaciones: prestaciones,
                   totalPagar: dato.categoriascapital.salarioBase + prestaciones,
@@ -177,7 +178,9 @@ export default function NominaEmpleados() {
                       prestacionesCargadas[0].valor) /
                       100,
                 };
+
                 reporte.push(item);
+
                 return (
                   <Tr key={dato.dui}>
                     <Td>{dato.dui}</Td>
@@ -185,25 +188,22 @@ export default function NominaEmpleados() {
                       {dato.candidatos.nombres} {dato.candidatos.apellidos}
                     </Td>
                     <Td>${item.salarioBase}</Td>
-                    {descuentosCargados != null &&
-                      descuentosCargados.map((descuento, i) => {
-                        return (
-                          <Td key={i}>
-                            $
-                            {(
-                              dato.categoriascapital.salarioBase *
-                              (descuento.porcentajeEmpleador / 100)
-                            ).toFixed(2)}
-                          </Td>
-                        );
-                      })}
+                    {Array.isArray(descuentosCargados) &&
+                      descuentosCargados.map((descuento, i) => (
+                        <Td key={i}>
+                          $
+                          {(
+                            dato.categoriascapital.salarioBase *
+                            (descuento.porcentajeEmpleador / 100)
+                          ).toFixed(2)}
+                        </Td>
+                      ))}
                     <Td>$ {item.totalPagar.toFixed(2)}</Td>
                     <Td>${item.ganancia.toFixed(2)}</Td>
                     <Td>${item.totalCobrar.toFixed(2)}</Td>
                   </Tr>
                 );
               })}
-            {/* {console.log(reporte)} */}
           </Tbody>
           <Tfoot>
             <Tr>

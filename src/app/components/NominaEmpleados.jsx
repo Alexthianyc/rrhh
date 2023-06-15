@@ -20,7 +20,8 @@ const fetchData = async () => {
       .from("trabajadores")
       .select(
         "dui,candidatos(nombres,apellidos),categoriascapital(salarioBase,nombre)"
-      );
+      )
+      .eq("activo", true);
 
     if (error) {
       return error;

@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { MdOutlineDelete } from "react-icons/md";
 import EditDeducciones from "./EditDeducciones";
+import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
   table: "deducciones",
@@ -109,8 +110,10 @@ export default function DeduccionesTable() {
                     <Td>
                       <EditDeducciones prevData={dato} />
                     </Td>
-                    <Td
-                      onClick={() => {
+                    <ConfirmationButton
+                      buttonLabel={<MdOutlineDelete />}
+                      confirmationLabel="eliminar esta deduccion"
+                      onConfirm={() => {
                         let del = deleteCandidate("id", dato.id);
                         del.then((res) => {
                           if (res == null) {
@@ -130,9 +133,7 @@ export default function DeduccionesTable() {
                           }
                         });
                       }}
-                    >
-                      <MdOutlineDelete />
-                    </Td>
+                    />
                   </Tr>
                 );
               })}

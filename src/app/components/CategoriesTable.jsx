@@ -13,6 +13,7 @@ import {
   TableContainer,
   useToast,
 } from "@chakra-ui/react";
+import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
   table: "categoriascapital",
@@ -116,8 +117,10 @@ export default function CategoriesTable() {
                     <Td>
                       <EditCategorias prevData={dato} />
                     </Td>
-                    <Td
-                      onClick={() => {
+                    <ConfirmationButton
+                      buttonLabel={<MdOutlineDelete />}
+                      confirmationLabel="eliminar esta categoria"
+                      onConfirm={() => {
                         let del = deleteCandidate("id", dato.id);
                         del.then((res) => {
                           if (res == null) {
@@ -138,9 +141,7 @@ export default function CategoriesTable() {
                           }
                         });
                       }}
-                    >
-                      <MdOutlineDelete />
-                    </Td>
+                    />
                   </Tr>
                 );
               })}

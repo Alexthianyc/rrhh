@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import EditTrabajadores from "./EditTrabajadores";
 import { HiMinusCircle, HiCheckCircle } from "react-icons/hi2";
+import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
   table: "trabajadores",
@@ -165,59 +166,30 @@ export default function TrabajadoresTable() {
                     <Td>
                       <EditTrabajadores prevData={dato} />
                     </Td>
-                    <Td>
-                      {dato.activo ? (
-                        <HiMinusCircle
-                          onClick={async () => {
-                            let res = await changeEstado(
-                              "dui",
-                              dato.dui,
-                              false
-                            );
-                            if (res != null) {
-                              toast({
-                                title: "Error",
-                                description: "No se pudo actualizar el estado",
-                                status: "error",
-                                duration: 3000,
-                                isClosable: true,
-                              });
-                            } else {
-                              toast({
-                                title: "Actualizado",
-                                description: "Trajador desactivado",
-                                status: "success",
-                                duration: 3000,
-                                isClosable: true,
-                              });
-                            }
-                          }}
-                        />
-                      ) : (
-                        <HiCheckCircle
-                          onClick={async () => {
-                            let res = await changeEstado("dui", dato.dui, true);
-                            if (res != null) {
-                              toast({
-                                title: "Error",
-                                description: "No se pudo actualizar el estado",
-                                status: "error",
-                                duration: 3000,
-                                isClosable: true,
-                              });
-                            } else {
-                              toast({
-                                title: "Actualizado",
-                                description: "Trabajador activado",
-                                status: "success",
-                                duration: 3000,
-                                isClosable: true,
-                              });
-                            }
-                          }}
-                        />
-                      )}
-                    </Td>
+                    <ConfirmationButton
+                    buttonLabel={dato.activo ? <HiMinusCircle /> : <HiCheckCircle />}
+                    confirmationLabel= {dato.activo ? "desactivar el empleado" : "activar el empleado"}
+                    onConfirm={() => {
+                      let res = changeEstado("dui", dato.dui, !dato.activo);
+                      if (res == null) {
+                        toast({
+                          title: "Error",
+                          description: "No se pudo actualizar el estado",
+                          status: "error",
+                          duration: 3000,
+                          isClosable: true,
+                        });
+                      }else{
+                        toast({
+                          title: "Actualizado",
+                          description: dato.activo ? "Trabajador desactivado" : "Trabajador activado",
+                          status: "success",
+                          duration: 3000,
+                          isClosable: true,
+                        });
+                      }
+                    }}
+                  />
                   </Tr>
                 );
               })}
