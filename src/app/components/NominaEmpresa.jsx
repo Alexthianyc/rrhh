@@ -226,7 +226,7 @@ export default function NominaEmpleados() {
           </Tfoot>
         </Table>
       </TableContainer>
-      <Text>Ganancia = {(totalCobrara - totalPagara).toFixed(2)}</Text>
+      {/* <Text>Ganancia = {(totalCobrara - totalPagara).toFixed(2)}</Text> */}
       <Button
         onClick={() => {
           generarPDF(reporte, totalPagara, totalCobrara);

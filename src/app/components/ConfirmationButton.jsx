@@ -10,7 +10,12 @@ import {
   AlertDialogOverlay,
 } from "@chakra-ui/react";
 
-const ConfirmationButton = ({ buttonLabel, confirmationLabel, onConfirm }) => {
+const ConfirmationButton = ({
+  buttonLabel,
+  confirmationLabel,
+  onConfirm,
+  isTd = true,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const cancelRef = useRef();
 
@@ -21,10 +26,11 @@ const ConfirmationButton = ({ buttonLabel, confirmationLabel, onConfirm }) => {
 
   return (
     <>
-      <Td onClick={() => setIsOpen(true)}>
+      isTd ? <Td onClick={() => setIsOpen(true)}>{buttonLabel}</Td> :
+      <Button colorScheme="blue" mr={3} onClick={() => setIsOpen(true)}>
         {buttonLabel}
-      </Td>
-
+      </Button>
+      ;
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}
