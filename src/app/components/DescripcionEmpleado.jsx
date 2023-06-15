@@ -35,8 +35,9 @@ const fetchData = async (dui) => {
 const CustomAlertDialog = forwardRef((props, ref) => (
   <AlertDialog {...props} leastDestructiveRef={ref} />
 ));
+CustomAlertDialog.displayName = "CustomAlertDialog";
 
-export default function DescripcionEmpleado({ dui }) {
+export default function DescripcionEmpleado(dui) {
   const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const cancelRef = useRef();
@@ -56,7 +57,7 @@ export default function DescripcionEmpleado({ dui }) {
       fetchDataAndSetState();
       //   console.log("fetching data");
     }
-  }, [data]);
+  }, [data, dui]);
   return (
     <Td>
       <AiOutlineEye onClick={() => setIsOpen(true)} />

@@ -28,14 +28,13 @@ export default function NominaMensual() {
 
   const handleBuscarClick = () => {
     if (!selectedDate) {
-      // Mostrar el diálogo de alerta
       setIsAlertOpen(true);
       return;
     }
 
     setLoading(true);
 
-    // Aquí iría tu lógica para buscar y cargar los datos
+    console.log(selectedDate);
 
     // Simulación de una llamada asincrónica
     setTimeout(() => {
