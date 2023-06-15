@@ -15,6 +15,7 @@ import {
 import EditTrabajadores from "./EditTrabajadores";
 import { HiMinusCircle, HiCheckCircle } from "react-icons/hi2";
 import ConfirmationButton from "./ConfirmationButton";
+import DescripcionEmpleado from "./DescripcionEmpleado";
 
 const dataProp = {
   table: "trabajadores",
@@ -107,6 +108,7 @@ export default function TrabajadoresTable() {
               })}
               <Th></Th>
               <Th></Th>
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -126,6 +128,7 @@ export default function TrabajadoresTable() {
                     }
                   >
                     <Td>{dato.dui}</Td>
+                    <DescripcionEmpleado dui={dato.dui} />
                     <Td>
                       {dato.candidatos.nombres +
                         " " +

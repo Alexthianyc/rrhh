@@ -13,6 +13,7 @@ import {
 import { supabase } from "@app/utils/supabaseClient";
 import { useEffect, useState } from "react";
 import NominasPdf from "./NominasPdf";
+import DescripcionEmpleado from "./DescripcionEmpleado";
 
 const fetchData = async () => {
   try {
@@ -172,6 +173,7 @@ export default function NominaEmpleados() {
           <Thead>
             <Tr>
               <Th>DUI</Th>
+              <Th></Th>
               <Th>Nombre completo</Th>
               <Th>Salario base</Th>
               {descuentosCargados != null &&
@@ -224,6 +226,7 @@ export default function NominaEmpleados() {
                 return (
                   <Tr key={item.dui}>
                     <Td>{item.dui}</Td>
+                    <DescripcionEmpleado dui={item.dui} />
                     <Td>{item.nombre}</Td>
                     <Td>${item.salarioBase}</Td>
                     {descuentosCargados != null &&

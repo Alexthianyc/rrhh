@@ -10,9 +10,9 @@ import {
   Td,
   TableCaption,
   TableContainer,
-  Text,
   Button,
 } from "@chakra-ui/react";
+import DescripcionEmpleado from "./DescripcionEmpleado";
 
 const fetchData = async () => {
   try {
@@ -143,6 +143,7 @@ export default function NominaEmpleados() {
           <Thead>
             <Tr>
               <Th>DUI</Th>
+              <Th></Th>
               <Th>Nombre completo</Th>
               <Th>Salario del empleado</Th>
               {descuentosCargados != null &&
@@ -184,6 +185,7 @@ export default function NominaEmpleados() {
                 return (
                   <Tr key={dato.dui}>
                     <Td>{dato.dui}</Td>
+                    <DescripcionEmpleado dui={dato.dui} />
                     <Td>
                       {dato.candidatos.nombres} {dato.candidatos.apellidos}
                     </Td>
