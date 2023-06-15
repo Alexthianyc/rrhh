@@ -10,7 +10,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Button,
   useDisclosure,
   useToast,
   InputGroup,
@@ -19,6 +18,7 @@ import {
 import { useState, useRef } from "react";
 import { supabase } from "@app/utils/supabaseClient";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
   table: "categoriascapital",
@@ -126,10 +126,11 @@ export default function EditCategorias({ prevData }) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={async () => {
+              <ConfirmationButton
+                buttonLabel="Actualizar categoria"
+                confirmationLabel="actualizar esta categoria"
+                isTd={false}
+                onConfirm={async () => {
                   let res = await handleSubmit();
                   if (res == null) {
                     toast({
@@ -148,9 +149,7 @@ export default function EditCategorias({ prevData }) {
                   }
                   onClose();
                 }}
-              >
-                Actualizar
-              </Button>
+              />
             </ModalFooter>
           </ModalContent>
         </Flex>

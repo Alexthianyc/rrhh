@@ -56,7 +56,7 @@ export default function EditarPuestos({ dataProp, prevData }) {
   };
   return (
     <>
-    < MdOutlineModeEditOutline onClick={onOpen}/>
+      <MdOutlineModeEditOutline onClick={onOpen} />
 
       <Modal
         initialFocusRef={initialRef}
@@ -97,10 +97,11 @@ export default function EditarPuestos({ dataProp, prevData }) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={async () => {
+              <ConfirmationButton
+                buttonLabel="Actualizar puesto"
+                confirmationLabel="actualizar este puesto"
+                isTd={false}
+                onConfirm={async () => {
                   let res = await handleSubmit();
                   if (res == null) {
                     toast({
@@ -119,9 +120,7 @@ export default function EditarPuestos({ dataProp, prevData }) {
                   }
                   onClose();
                 }}
-              >
-                Actualizar
-              </Button>
+              />
             </ModalFooter>
           </ModalContent>
         </Flex>

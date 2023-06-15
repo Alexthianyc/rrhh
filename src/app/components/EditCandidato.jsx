@@ -10,13 +10,13 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Button,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import { useState, useRef } from "react";
 import { supabase } from "@app/utils/supabaseClient";
 import { MdOutlineModeEditOutline } from "react-icons/md";
+import ConfirmationButton from "./ConfirmationButton";
 
 export default function EditCandidatos({ dataProp, prevData }) {
   const toast = useToast();
@@ -87,10 +87,11 @@ export default function EditCandidatos({ dataProp, prevData }) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={async () => {
+              <ConfirmationButton
+                buttonLabel="Actualizar candidato"
+                confirmationLabel="actualizar este candidato"
+                isTd={false}
+                onConfirm={ async() => {
                   let res = await handleSubmit();
                   if (res == null) {
                     toast({
@@ -109,9 +110,7 @@ export default function EditCandidatos({ dataProp, prevData }) {
                   }
                   onClose();
                 }}
-              >
-                Actualizar
-              </Button>
+              />
             </ModalFooter>
           </ModalContent>
         </Flex>

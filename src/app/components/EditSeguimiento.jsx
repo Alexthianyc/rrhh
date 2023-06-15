@@ -145,10 +145,11 @@ export default function EditSeguimiento({ prevData }) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={async () => {
+              <ConfirmationButton
+                buttonLabel="Actualizar seguimiento"
+                confirmationLabel="actualizar este seguimiento"
+                isTd={false}
+                onConfirm={async () => {
                   let res = await handleSubmit();
                   if (res == null) {
                     toast({
@@ -167,9 +168,7 @@ export default function EditSeguimiento({ prevData }) {
                   }
                   onClose();
                 }}
-              >
-                Actualizar
-              </Button>
+              />
             </ModalFooter>
           </ModalContent>
         </Flex>

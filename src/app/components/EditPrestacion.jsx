@@ -28,7 +28,12 @@ const dataProp = {
   tittleError: "Error al actualizar prestacion",
   columns: [
     { name: "Codigo", key: "cod", typeCol: "text", diseable: true },
-    { name: "Descripcion", key: "descripcion", typeCol: "text", diseable: true },
+    {
+      name: "Descripcion",
+      key: "descripcion",
+      typeCol: "text",
+      diseable: true,
+    },
     { name: "Valor", key: "valor", typeCol: "number", diseable: false },
   ],
 };
@@ -87,7 +92,7 @@ export default function EditPrestacion({ prevData }) {
             <ModalCloseButton />
             <ModalBody>
               {dataProp.columns.map((col) => {
-                return prevData.porcentaje == true && col.key == 'valor' ? (
+                return prevData.porcentaje == true && col.key == "valor" ? (
                   <FormControl key={col.name}>
                     <FormLabel>{col.name}</FormLabel>
                     <InputGroup>
@@ -127,10 +132,11 @@ export default function EditPrestacion({ prevData }) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={async () => {
+              <ConfirmationButton
+                buttonLabel="Actualizar prestacion"
+                confirmationLabel="actualizar esta prestacion"
+                isTd={false}
+                onConfirm={async () => {
                   let res = await handleSubmit();
                   if (res == null) {
                     toast({
@@ -149,9 +155,7 @@ export default function EditPrestacion({ prevData }) {
                   }
                   onClose();
                 }}
-              >
-                Actualizar
-              </Button>
+              />
             </ModalFooter>
           </ModalContent>
         </Flex>

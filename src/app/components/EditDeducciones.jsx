@@ -133,10 +133,11 @@ export default function EditCategorias({ prevData }) {
             </ModalBody>
 
             <ModalFooter>
-              <Button
-                colorScheme="blue"
-                mr={3}
-                onClick={async () => {
+              <ConfirmationButton
+                buttonLabel="Actualizar deduccion"
+                confirmationLabel="actualizar esta deduccion"
+                isTd={false}
+                onConfirm={async () => {
                   let res = await handleSubmit();
                   if (res == null) {
                     toast({
@@ -155,9 +156,7 @@ export default function EditCategorias({ prevData }) {
                   }
                   onClose();
                 }}
-              >
-                Actualizar
-              </Button>
+              />
             </ModalFooter>
           </ModalContent>
         </Flex>
