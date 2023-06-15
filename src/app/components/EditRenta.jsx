@@ -23,7 +23,7 @@ import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
   table: "renta",
-  headerText: "Editar Tramo de Renta",
+  headerText: "Editar tramo de renta",
   tittleSuccess: "Trajo de renta actualizado",
   tittleError: "Error al actualizar tramo de renta",
   columns: [
@@ -138,7 +138,7 @@ export default function EditRenta({ prevData }) {
 
             <ModalFooter>
               <ConfirmationButton
-                buttonLabel="Actualizar traamo"
+                buttonLabel="Actualizar tramo"
                 confirmationLabel="actualizar este tramo de renta"
                 isTd={false}
                 onConfirm={async () => {
