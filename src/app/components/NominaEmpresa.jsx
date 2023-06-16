@@ -158,6 +158,7 @@ export default function NominaEmpleados() {
           <Tbody>
             {datosCargados != null &&
               datosCargados.map((dato) => {
+                prestaciones = 0;
                 descuentosCargados.forEach((descuento) => {
                   prestaciones +=
                     dato.categoriascapital.salarioBase *

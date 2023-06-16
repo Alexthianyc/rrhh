@@ -21,10 +21,40 @@ import {
 import NominaEmpleados from "@app/components/NominaEmpleados";
 import NominaEmpresa from "@app/components/NominaEmpresa";
 
+function obtenerNombreMes(mes) {
+  const nombresMeses = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre",
+  ];
+
+  return nombresMeses[mes - 1]; // Restar 1 para obtener el índice correcto
+}
+
+function ValidarFecha(fechaString) {
+  const fecha = new Date(fechaString);
+  const mes = fecha.getMonth() + 1; // Los meses en JavaScript son indexados desde 0, por lo que se suma 1
+
+  return {
+    esDiciembre: mes === 12,
+    nombreMes: obtenerNombreMes(mes),
+  };
+}
+
 export default function NominaMensual() {
   const [loading, setLoading] = useState(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [resultado, setResultado] = useState(null);
 
   const handleBuscarClick = () => {
     if (!selectedDate) {
@@ -33,8 +63,7 @@ export default function NominaMensual() {
     }
 
     setLoading(true);
-
-    console.log(selectedDate);
+    setResultado(ValidarFecha(selectedDate));
 
     // Simulación de una llamada asincrónica
     setTimeout(() => {
@@ -49,7 +78,7 @@ export default function NominaMensual() {
   return (
     <>
       <Flex my={3} mx={4}>
-        <Text as="b" fontSize="md" w="100%" alignSelf="center">
+        <Text fontSize="md" w="100%" alignSelf="center">
           Seleccione una fecha
         </Text>
         <Input
@@ -69,20 +98,31 @@ export default function NominaMensual() {
         </Flex>
       )}
       {loading === false && (
-        <Tabs variant="enclosed">
-          <TabList>
-            <Tab>Empleados</Tab>
-            <Tab>Empresa</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel>
-              <NominaEmpleados />
-            </TabPanel>
-            <TabPanel>
-              <NominaEmpresa />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+        <>
+          <Text
+            as="b"
+            fontSize="md"
+            w="100%"
+            my={3}
+            pl={4}
+          >
+            Nomina del mes de {resultado?.nombreMes}
+          </Text>
+          <Tabs variant="enclosed">
+            <TabList>
+              <Tab>Empleados</Tab>
+              <Tab>Empresa</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <NominaEmpleados esDiciembre={resultado.esDiciembre} />
+              </TabPanel>
+              <TabPanel>
+                <NominaEmpresa />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
+        </>
       )}
 
       {/* Diálogo de alerta */}

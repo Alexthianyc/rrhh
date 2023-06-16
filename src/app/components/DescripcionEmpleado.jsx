@@ -15,7 +15,7 @@ import { supabase } from "@app/utils/supabaseClient";
 import { useEffect, useState, useRef, forwardRef } from "react";
 import { AiOutlineEye, AiOutlineCloseCircle } from "react-icons/ai";
 
-const fetchData = async (dui) => {
+const fetchData = async ({dui}) => {
   try {
     let { data, error } = await supabase
       .from("trabajadores")
@@ -55,7 +55,7 @@ export default function DescripcionEmpleado(dui) {
 
     if (!data.dui) {
       fetchDataAndSetState();
-      //   console.log("fetching data");
+        // console.log("fetching data");
     }
   }, [data, dui]);
   return (

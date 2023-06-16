@@ -20,7 +20,7 @@ const fetchData = async () => {
     let { data, error } = await supabase
       .from("trabajadores")
       .select(
-        "dui,candidatos(nombres,apellidos),categoriascapital(salarioBase,nombre)"
+        "dui,candidatos(*),categoriascapital(salarioBase,nombre)"
       )
       .eq("activo", true);
 
@@ -106,7 +106,7 @@ const generarPDF = async (data) => {
   window.open(url, "_blank"); // Abre el PDF en una nueva pestaña
 };
 
-export default function NominaEmpleados() {
+export default function NominaEmpleados({esDiciembre}) {
   const [datosCargados, setDatosCargados] = useState(null);
   const [descuentosCargados, setDescuentosCargados] = useState(null);
   const [rentaCargada, setRentaCargada] = useState(null);
@@ -165,6 +165,8 @@ export default function NominaEmpleados() {
   let deducciones = 0;
   let nominas = [];
   let item = {};
+
+  // console.log(datosCargados);
   return (
     <>
       <TableContainer>
