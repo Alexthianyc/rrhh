@@ -1,5 +1,7 @@
 import { supabase } from "@app/utils/supabaseClient";
 import { useEffect, useState } from "react";
+import { MdOutlineDelete } from "react-icons/md";
+import ConfirmationButton from "./ConfirmationButton";
 import {
   Table,
   Thead,
@@ -102,7 +104,9 @@ export default function HorasExtrasTable() {
                   <Tr key={dato.id}>
                     <Td>{dato.dui}</Td>
                     <Td>{dato.fecha}</Td>
-                    <Td>{dato.cantidad} {dato.cantidad > 1 ? "horas" : "hora"}</Td>
+                    <Td>
+                      {dato.cantidad} {dato.cantidad > 1 ? "horas" : "hora"}
+                    </Td>
                     <Td>{dato.tipo}</Td>
                     <ConfirmationButton
                       buttonLabel={<MdOutlineDelete />}
@@ -119,8 +123,7 @@ export default function HorasExtrasTable() {
                             });
                           } else {
                             toast({
-                              title:
-                                "Error: No se pudo eliminar la hora extra",
+                              title: "Error: No se pudo eliminar la hora extra",
                               status: "error",
                               duration: 3000,
                               isClosable: true,

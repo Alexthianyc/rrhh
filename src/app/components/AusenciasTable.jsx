@@ -1,5 +1,7 @@
 import { supabase } from "@app/utils/supabaseClient";
 import { useEffect, useState } from "react";
+import { MdOutlineDelete } from "react-icons/md";
+import ConfirmationButton from "./ConfirmationButton";
 import {
   Table,
   Thead,

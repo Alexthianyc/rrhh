@@ -1,7 +1,3 @@
-import { supabase } from "@app/utils/supabaseClient";
-import { useEffect, useState } from "react";
-import { MdOutlineDelete } from "react-icons/md";
-import EditCategorias from "./EditCategorias";
 import {
   Table,
   Thead,
@@ -13,6 +9,10 @@ import {
   TableContainer,
   useToast,
 } from "@chakra-ui/react";
+import { supabase } from "@app/utils/supabaseClient";
+import { useEffect, useState } from "react";
+import EditCategorias from "./EditCategorias";
+import { MdOutlineDelete } from "react-icons/md";
 import ConfirmationButton from "./ConfirmationButton";
 
 const dataProp = {
