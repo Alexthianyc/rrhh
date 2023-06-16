@@ -98,8 +98,8 @@ export default async function ReportePdf(reporte) {
       totalDescuentosISSS -
       totalRenta
     ).toFixed(2)}
-    Total Total a Pagar: $${totalTotalPagar.toFixed(2)}
-    Total Total a Cobrar: $${totalTotalCobrar.toFixed(2)}
+    Total a Pagar: $${totalTotalPagar.toFixed(2)}
+    Total a Cobrar: $${totalTotalCobrar.toFixed(2)}
     Total Ganancia: $${totalGanancia.toFixed(2)}
   `;
 
