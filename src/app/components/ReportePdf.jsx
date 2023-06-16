@@ -71,12 +71,7 @@ export default async function ReportePdf(reporte) {
   // Generar el contenido del PDF utilizando las variables
   const content = `
     Informe de Nómina
-    Pago total en Salarios: $${(
-      totalSalario -
-      totalDescuentosAFP -
-      totalDescuentosISSS -
-      totalRenta
-    ).toFixed(2)}
+    Pago total en Salarios: $${totalSalario.toFixed(2)}
 
     Descuentos en los salarios de los trabajadores:
     Total Descuentos AFP: $${totalDescuentosAFP.toFixed(2)}
@@ -88,6 +83,8 @@ export default async function ReportePdf(reporte) {
     Total Prestaciones ISSS: $${totalPrestacionesISSS.toFixed(2)}
     Total Aguinaldo: $${totalAguinaldo.toFixed(2)}
 
+    
+    Resumen del reporte:
     Pago total a realizar a AFP: $${(
       totalDescuentosAFP + totalPrestacionesAFP
     ).toFixed(2)}
@@ -95,11 +92,15 @@ export default async function ReportePdf(reporte) {
       totalDescuentosISSS + totalPrestacionesISSS
     ).toFixed(2)}
     Pago total a realizar al ministerio de hacienda: $${totalRenta.toFixed(2)}
-
-    Resumen del reporte:
+    Pago total a trabajadores con los descuentos: $${(
+      totalSalario -
+      totalDescuentosAFP -
+      totalDescuentosISSS -
+      totalRenta
+    ).toFixed(2)}
     Total Total a Pagar: $${totalTotalPagar.toFixed(2)}
-    Total Ganancia: $${totalGanancia.toFixed(2)}
     Total Total a Cobrar: $${totalTotalCobrar.toFixed(2)}
+    Total Ganancia: $${totalGanancia.toFixed(2)}
   `;
 
   page.drawText(content, {
