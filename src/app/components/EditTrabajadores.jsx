@@ -114,7 +114,7 @@ export default function EditSeguimiento({ prevData }) {
                       onChange={handleInputChange}
                       type={col.typeCol}
                       defaultValue={
-                        prevData[col.key] != null && prevData[col.key]
+                        prevData[col.key] != null ? prevData[col.key] : ""
                       }
                       disabled={col.disabled}
                     />

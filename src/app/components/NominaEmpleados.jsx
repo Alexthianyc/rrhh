@@ -322,7 +322,7 @@ export default function NominaEmpleados({ esDiciembre, fechaNomina }) {
           window.print();
         }}
       >
-        Generar boletas de pago
+        Imprimir
       </Button>
     </>
   );
