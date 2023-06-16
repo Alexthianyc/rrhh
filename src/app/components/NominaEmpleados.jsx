@@ -12,16 +12,62 @@ import {
 } from "@chakra-ui/react";
 import { supabase } from "@app/utils/supabaseClient";
 import { useEffect, useState } from "react";
-import NominasPdf from "./NominasPdf";
 import DescripcionEmpleado from "./DescripcionEmpleado";
+import NominasPdf from "./NominasPdf";
+
+function calcularAniosYMesesTranscurridos(fechaString, fechaNom) {
+  const fecha = new Date(fechaString);
+  const fechaActual = new Date(fechaNom);
+
+  // Cálculo de los años transcurridos
+  let aniosTranscurridos = fechaActual.getFullYear() - fecha.getFullYear();
+
+  // Cálculo de los meses transcurridos
+  let mesesTranscurridos = fechaActual.getMonth() - fecha.getMonth();
+
+  // Ajuste si los meses transcurridos son negativos
+  if (mesesTranscurridos < 0) {
+    aniosTranscurridos--;
+    mesesTranscurridos += 12;
+  }
+
+  // Ajuste si es menor a un año
+  if (aniosTranscurridos < 1) {
+    aniosTranscurridos = 0;
+  }
+
+  return {
+    anios: aniosTranscurridos,
+    meses: mesesTranscurridos,
+  };
+}
+
+function calcularAguinaldo(salarioMensual, aniosAntiguedad, mesesAntiguedad) {
+  const salarioDiario = salarioMensual / 30; // Suponiendo 30 días en un mes
+  let diasAguinaldo;
+
+  const mesesTotales = aniosAntiguedad * 12 + mesesAntiguedad;
+
+  if (aniosAntiguedad < 1) {
+    diasAguinaldo = (10 * mesesAntiguedad) / 12;
+  } else if (aniosAntiguedad < 3) {
+    diasAguinaldo = 10;
+  } else if (aniosAntiguedad < 10) {
+    diasAguinaldo = 15;
+  } else {
+    diasAguinaldo = 18;
+  }
+
+  const aguinaldoProporcional = salarioDiario * diasAguinaldo;
+
+  return aguinaldoProporcional;
+}
 
 const fetchData = async () => {
   try {
     let { data, error } = await supabase
       .from("trabajadores")
-      .select(
-        "dui,candidatos(*),categoriascapital(salarioBase,nombre)"
-      )
+      .select("dui,candidatos(*),categoriascapital(salarioBase,nombre)")
       .eq("activo", true);
 
     if (error) {
@@ -106,7 +152,7 @@ const generarPDF = async (data) => {
   window.open(url, "_blank"); // Abre el PDF en una nueva pestaña
 };
 
-export default function NominaEmpleados({esDiciembre}) {
+export default function NominaEmpleados({ esDiciembre, fechaNomina }) {
   const [datosCargados, setDatosCargados] = useState(null);
   const [descuentosCargados, setDescuentosCargados] = useState(null);
   const [rentaCargada, setRentaCargada] = useState(null);
@@ -165,6 +211,8 @@ export default function NominaEmpleados({esDiciembre}) {
   let deducciones = 0;
   let nominas = [];
   let item = {};
+  let aguinaldo = 0;
+  let salario = 0;
 
   // console.log(datosCargados);
   return (
@@ -177,7 +225,8 @@ export default function NominaEmpleados({esDiciembre}) {
               <Th>DUI</Th>
               <Th></Th>
               <Th>Nombre completo</Th>
-              <Th>Salario base</Th>
+              <Th>Salario</Th>
+              {esDiciembre && <Th>Aguinaldo</Th>}
               {descuentosCargados != null &&
                 descuentosCargados.map((descuento, i) => {
                   return <Th key={i}>{descuento.nombre}</Th>;
@@ -195,33 +244,39 @@ export default function NominaEmpleados({esDiciembre}) {
                     (descuento.porcentajeTrabajador / 100);
                 });
 
+                if (esDiciembre) {
+                  aguinaldo = calcularAguinaldo(
+                    dato.categoriascapital.salarioBase,
+                    calcularAniosYMesesTranscurridos(
+                      dato.candidatos.created_at,
+                      fechaNomina
+                    ).anios,
+                    calcularAniosYMesesTranscurridos(
+                      dato.candidatos.created_at,
+                      fechaNomina
+                    ).meses
+                  );
+                  salario = dato.categoriascapital.salarioBase + aguinaldo;
+                } else {
+                  salario = dato.categoriascapital.salarioBase;
+                }
                 item = {
                   dui: dato.dui,
                   puesto: dato.categoriascapital.nombre,
                   nombre:
                     dato.candidatos.nombres + " " + dato.candidatos.apellidos,
-                  salarioBase: dato.categoriascapital.salarioBase,
+                  salarioBase: salario,
                   descuentos: descuentosCargados.map((descuento) => {
                     return {
                       tipo: descuento.nombre,
-                      monto:
-                        dato.categoriascapital.salarioBase *
-                        (descuento.porcentajeTrabajador / 100),
+                      monto: salario * (descuento.porcentajeTrabajador / 100),
                     };
                   }),
-                  renta: calcularRenta(
-                    dato.categoriascapital.salarioBase,
-                    rentaCargada,
-                    deducciones
-                  ),
+                  renta: calcularRenta(salario, rentaCargada, deducciones),
                   salarioLiquido:
-                    dato.categoriascapital.salarioBase -
+                    salario -
                     deducciones -
-                    calcularRenta(
-                      dato.categoriascapital.salarioBase,
-                      rentaCargada,
-                      deducciones
-                    ),
+                    calcularRenta(salario, rentaCargada, deducciones),
                 };
                 nominas.push(item);
 
@@ -230,14 +285,15 @@ export default function NominaEmpleados({esDiciembre}) {
                     <Td>{item.dui}</Td>
                     <DescripcionEmpleado dui={item.dui} />
                     <Td>{item.nombre}</Td>
-                    <Td>${item.salarioBase}</Td>
+                    <Td>${dato.categoriascapital.salarioBase.toFixed(2)}</Td>
+                    {esDiciembre && <Td>${aguinaldo.toFixed(2)}</Td>}
                     {descuentosCargados != null &&
                       descuentosCargados.map((descuento, i) => {
                         return (
                           <Td key={i}>
                             $
                             {(
-                              dato.categoriascapital.salarioBase *
+                              salario *
                               (descuento.porcentajeTrabajador / 100)
                             ).toFixed(2)}
                           </Td>
@@ -261,7 +317,10 @@ export default function NominaEmpleados({esDiciembre}) {
         colorScheme="teal"
         size="sm"
         my={2}
-        onClick={() => generarPDF(nominas)}
+        onClick={() => {
+          // Lógica para imprimir
+          window.print();
+        }}
       >
         Generar boletas de pago
       </Button>

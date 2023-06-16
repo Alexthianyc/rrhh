@@ -32,6 +32,23 @@ const fetchData = async () => {
   }
 };
 
+const deleteHora = async (col, id) => {
+  try {
+    const { data, error } = await supabase
+      .from(dataProp.table)
+      .delete()
+      .eq(col, id);
+
+    if (error) {
+      return error;
+    } else {
+      return data;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 export default function HorasExtrasTable() {
   const [datosCargados, setDatosCargados] = useState(null);
 
@@ -75,6 +92,7 @@ export default function HorasExtrasTable() {
               {dataProp.thItems.map((thItem) => {
                 return <Th key={thItem}>{thItem}</Th>;
               })}
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -86,6 +104,31 @@ export default function HorasExtrasTable() {
                     <Td>{dato.fecha}</Td>
                     <Td>{dato.cantidad} {dato.cantidad > 1 ? "horas" : "hora"}</Td>
                     <Td>{dato.tipo}</Td>
+                    <ConfirmationButton
+                      buttonLabel={<MdOutlineDelete />}
+                      confirmationLabel="eliminar esta hora extra"
+                      onConfirm={() => {
+                        let del = deleteHora("id", dato.id);
+                        del.then((res) => {
+                          if (res == null) {
+                            toast({
+                              title: "Hora extra eliminada exitosamente",
+                              status: "susccess",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                          } else {
+                            toast({
+                              title:
+                                "Error: No se pudo eliminar la hora extra",
+                              status: "error",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                          }
+                        });
+                      }}
+                    />
                   </Tr>
                 );
               })}

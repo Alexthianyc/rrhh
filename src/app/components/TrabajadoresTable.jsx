@@ -128,7 +128,6 @@ export default function TrabajadoresTable() {
                     }
                   >
                     <Td>{dato.dui}</Td>
-                    <DescripcionEmpleado dui={dato.dui} />
                     <Td>
                       {dato.candidatos.nombres +
                         " " +
@@ -166,6 +165,7 @@ export default function TrabajadoresTable() {
                     ) : (
                       <Td>No definido</Td>
                     )}
+                    <DescripcionEmpleado dui={dato.dui} />
                     <Td>
                       <EditTrabajadores prevData={dato} />
                     </Td>

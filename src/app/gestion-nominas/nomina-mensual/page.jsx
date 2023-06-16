@@ -115,10 +115,10 @@ export default function NominaMensual() {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <NominaEmpleados esDiciembre={resultado.esDiciembre} />
+                <NominaEmpleados esDiciembre={resultado.esDiciembre} fechaNomina={selectedDate} />
               </TabPanel>
               <TabPanel>
-                <NominaEmpresa />
+                <NominaEmpresa esDiciembre={resultado.esDiciembre} fechaNomina={selectedDate} />
               </TabPanel>
             </TabPanels>
           </Tabs>

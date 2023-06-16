@@ -32,6 +32,23 @@ const fetchData = async () => {
   }
 };
 
+const deleteAusencia = async (col, id) => {
+  try {
+    const { data, error } = await supabase
+      .from(dataProp.table)
+      .delete()
+      .eq(col, id);
+
+    if (error) {
+      return error;
+    } else {
+      return data;
+    }
+  } catch (error) {
+    return error;
+  }
+};
+
 export default function AusenciasTable() {
   const [datosCargados, setDatosCargados] = useState(null);
 
@@ -85,6 +102,30 @@ export default function AusenciasTable() {
                     <Td>{dato.dui}</Td>
                     <Td>{dato.fecha}</Td>
                     <Td>{dato.tipo}</Td>
+                    <ConfirmationButton
+                      buttonLabel={<MdOutlineDelete />}
+                      confirmationLabel="eliminar esta ausencia"
+                      onConfirm={() => {
+                        let del = deleteAusencia("id", dato.id);
+                        del.then((res) => {
+                          if (res == null) {
+                            toast({
+                              title: "Ausencia eliminada exitosamente",
+                              status: "success",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                          } else {
+                            toast({
+                              title: "Error al eliminar la ausencia",
+                              status: "error",
+                              duration: 3000,
+                              isClosable: true,
+                            });
+                          }
+                        });
+                      }}
+                    />
                   </Tr>
                 );
               })}
